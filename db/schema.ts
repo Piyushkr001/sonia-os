@@ -185,3 +185,74 @@ export type ConnectionRequest =
 
 export type NewConnectionRequest =
   typeof connectionRequests.$inferInsert;
+
+
+  export const visitorSessions = pgTable(
+  "visitor_sessions",
+  {
+    id: uuid("id").primaryKey(),
+
+    device: varchar("device", {
+      length: 20,
+    }).notNull(),
+
+    createdAt: timestamp("created_at", {
+      withTimezone: true,
+    })
+      .defaultNow()
+      .notNull(),
+
+    lastSeenAt: timestamp("last_seen_at", {
+      withTimezone: true,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    index("visitor_sessions_created_at_idx")
+      .on(table.createdAt),
+  ]
+);
+
+export const engagementEvents = pgTable(
+  "engagement_events",
+  {
+    id: uuid("id").primaryKey(),
+
+    sessionId: uuid("session_id")
+      .notNull()
+      .references(() => visitorSessions.id, {
+        onDelete: "cascade",
+      }),
+
+    eventName: varchar("event_name", {
+      length: 50,
+    }).notNull(),
+
+    target: varchar("target", {
+      length: 80,
+    }).notNull(),
+
+    createdAt: timestamp("created_at", {
+      withTimezone: true,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    index("engagement_events_session_idx")
+      .on(table.sessionId),
+
+    index("engagement_events_name_idx")
+      .on(table.eventName),
+
+    index("engagement_events_created_at_idx")
+      .on(table.createdAt),
+  ]
+);
+
+export type VisitorSession =
+  typeof visitorSessions.$inferSelect;
+
+export type EngagementEvent =
+  typeof engagementEvents.$inferSelect;

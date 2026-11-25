@@ -161,6 +161,8 @@ function KnowledgeNode({
       type="button"
       aria-pressed={active}
       aria-controls="knowledge-details"
+      data-track="knowledge_node"
+      data-target={module.id}
       onClick={onSelect}
       className={cn(
         "group relative z-10 flex w-full min-w-0",
@@ -484,6 +486,8 @@ function LeadershipLens() {
                 key={module.id}
                 type="button"
                 aria-haspopup="dialog"
+                data-track="leadership_open"
+                data-target={module.id}
                 onClick={() =>
                   setSelectedLeadership(module)
                 }
@@ -652,6 +656,8 @@ function PhilosophyCard() {
 
       <Link
         href="#ideas"
+        data-track="navigation_click"
+        data-target="ideas"
         className="group flex w-fit items-center gap-2 text-sm font-medium text-emerald-400 hover:text-emerald-300"
       >
         Explore the Philosophy
@@ -707,6 +713,8 @@ function DiscoveryCard() {
 
       <Link
         href="#ai"
+        data-track="navigation_click"
+        data-target="ai"
         className={cn(
           buttonVariants({ size: "lg" }),
           "group w-full rounded-xl sm:w-fit",
@@ -843,6 +851,8 @@ export default function Expertise() {
 
           <Link
             href="#ideas"
+            data-track="navigation_click"
+            data-target="ideas"
             className="group flex items-center gap-2 font-mono text-xs tracking-wider text-emerald-400 hover:text-emerald-300"
           >
             CONTINUE EXPLORING

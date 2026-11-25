@@ -27,7 +27,6 @@ import {
 } from "@/components/ui/sheet";
 
 import {
-  Command,
   CommandDialog,
   CommandEmpty,
   CommandGroup,
@@ -37,6 +36,7 @@ import {
 } from "@/components/ui/command";
 
 import { cn } from "@/lib/utils";
+import { trackEngagement } from "@/lib/analytics";
 
 const navLinks = [
   {
@@ -116,7 +116,7 @@ function Navbar() {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (
-        event.key.toLowerCase() === "k" &&
+        event.key?.toLowerCase() === "k" &&
         (event.metaKey || event.ctrlKey)
       ) {
         event.preventDefault();
@@ -134,12 +134,24 @@ function Navbar() {
     };
   }, []);
 
+  // Record navigation once, using the existing consent-aware provider.
+  const recordNavigation = (href: string) => {
+    trackEngagement("navigation_click", href.slice(1));
+  };
+
   const handleNavigation = (href: string) => {
+    recordNavigation(href);
     setActiveSection(href);
     setMobileOpen(false);
     setCommandOpen(false);
 
-    window.location.hash = href;
+    if (window.location.hash === href) {
+      document.getElementById(href.slice(1))?.scrollIntoView({
+        block: "start",
+      });
+    } else {
+      window.location.hash = href;
+    }
   };
 
   return (
@@ -168,6 +180,7 @@ function Navbar() {
           <Link
             href="/#explore"
             aria-label="SONIA.OS Home"
+            onClick={() => recordNavigation("#explore")}
             className="flex shrink-0 items-center"
           >
             <Image
@@ -194,9 +207,10 @@ function Navbar() {
                     ? "location"
                     : undefined
                 }
-                onClick={() =>
-                  setActiveSection(link.href)
-                }
+                onClick={() => {
+                  recordNavigation(link.href);
+                  setActiveSection(link.href);
+                }}
                 className={cn(
                   "relative flex items-center gap-2",
                   "rounded-lg px-3 py-2",
@@ -390,48 +404,46 @@ function Navbar() {
         open={commandOpen}
         onOpenChange={setCommandOpen}
       >
-        <Command>
-          <CommandInput placeholder="Explore SONIA.OS..." />
+        <CommandInput placeholder="Explore SONIA.OS..." />
 
-          <CommandList>
-            <CommandEmpty>
-              No matching sections found.
-            </CommandEmpty>
+        <CommandList>
+          <CommandEmpty>
+            No matching sections found.
+          </CommandEmpty>
 
-            <CommandGroup heading="Navigation">
-              {navLinks.map((link) => {
-                const Icon = link.icon;
+          <CommandGroup heading="Navigation">
+            {navLinks.map((link) => {
+              const Icon = link.icon;
 
-                return (
-                  <CommandItem
-                    key={link.href}
-                    value={link.title}
-                    onSelect={() =>
-                      handleNavigation(link.href)
-                    }
-                  >
-                    <Icon className="mr-2 size-4" />
+              return (
+                <CommandItem
+                  key={link.href}
+                  value={link.title}
+                  onSelect={() =>
+                    handleNavigation(link.href)
+                  }
+                >
+                  <Icon className="mr-2 size-4" />
 
-                    <span>{link.title}</span>
-                  </CommandItem>
-                );
-              })}
-            </CommandGroup>
+                  <span>{link.title}</span>
+                </CommandItem>
+              );
+            })}
+          </CommandGroup>
 
-            <CommandGroup heading="Connect">
-              <CommandItem
-                value="Let's Connect"
-                onSelect={() =>
-                  handleNavigation("#connect")
-                }
-              >
-                <ArrowUpRight className="mr-2 size-4" />
+          <CommandGroup heading="Connect">
+            <CommandItem
+              value="Let's Connect"
+              onSelect={() =>
+                handleNavigation("#connect")
+              }
+            >
+              <ArrowUpRight className="mr-2 size-4" />
 
-                <span>Let&apos;s Connect</span>
-              </CommandItem>
-            </CommandGroup>
-          </CommandList>
-        </Command>
+              <span>Let&apos;s Connect</span>
+            </CommandItem>
+          </CommandGroup>
+        </CommandList>
       </CommandDialog>
     </>
   );

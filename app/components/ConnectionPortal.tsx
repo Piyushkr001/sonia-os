@@ -68,6 +68,7 @@ import {
 } from "@/services/contact.service";
 
 import { cn } from "@/lib/utils";
+import { trackEngagement } from "@/lib/analytics";
 
 /* ------------------------------------------ */
 /*               Initial Form State           */
@@ -211,6 +212,8 @@ function ConnectionIntentSelector({
               type="button"
               disabled={disabled}
               aria-pressed={active}
+              data-track="connection_intent"
+              data-target={option.id}
               onClick={() => onSelect(option.id)}
               className={cn(
                 "group flex w-full items-center gap-3",
@@ -493,6 +496,8 @@ function ConnectionSuccess({
 
         <Link
           href="#explore"
+          data-track="navigation_click"
+          data-target="explore"
           className="flex h-11 items-center justify-center gap-2 rounded-xl border border-white/10 px-4 text-sm text-slate-300 transition-colors hover:border-emerald-400/30 hover:text-emerald-400"
         >
           Return to Explore
@@ -1055,6 +1060,9 @@ export default function ConnectionPortal() {
         });
 
       setResult(response);
+
+      // Record only confirmed submissions, without personal data.
+      trackEngagement("connection_submit", "recorded");
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const message =
@@ -1229,6 +1237,8 @@ export default function ConnectionPortal() {
 
           <Link
             href="#ideas"
+            data-track="navigation_click"
+            data-target="ideas"
             className="group flex items-center gap-2 text-sm font-medium text-emerald-400 hover:text-emerald-300"
           >
             Explore the Philosophy
@@ -1246,6 +1256,8 @@ export default function ConnectionPortal() {
 
           <Link
             href="#explore"
+            data-track="navigation_click"
+            data-target="explore"
             className="group flex items-center gap-2 font-mono text-xs tracking-wider text-emerald-400 hover:text-emerald-300"
           >
             RETURN TO EXPLORE

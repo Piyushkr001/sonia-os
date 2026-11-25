@@ -65,6 +65,8 @@ function IdentityNode({
   return (
     <Link
       href={node.href}
+      data-track="hero_action"
+      data-target={node.href.slice(1)}
       data-section={node.title.toLowerCase()}
       className={cn(
         "group relative flex min-w-0 flex-1 flex-col gap-3",
@@ -386,6 +388,8 @@ export default function Hero() {
           {/* Primary CTA */}
           <Link
             href="#journey"
+            data-track="hero_action"
+            data-target="journey"
             className={cn(
               buttonVariants({ size: "lg" }),
               "group h-12 rounded-xl px-6",
@@ -404,6 +408,8 @@ export default function Hero() {
           {/* Secondary CTA */}
           <Link
             href="#ai"
+            data-track="hero_action"
+            data-target="ai"
             className={cn(
               buttonVariants({
                 variant: "outline",
@@ -443,6 +449,8 @@ export default function Hero() {
 
           <Link
             href="#journey"
+            data-track="hero_action"
+            data-target="journey"
             className="group flex items-center gap-2 text-emerald-400"
           >
             <ArrowDown className="size-4 motion-safe:animate-bounce" />

@@ -33,6 +33,7 @@ import {
 } from "@/data/journey";
 
 import { cn } from "@/lib/utils";
+import { trackEngagement } from "@/lib/analytics";
 
 /* ----------------------------------------- */
 /*             Chapter Details               */
@@ -180,23 +181,33 @@ export default function Journey() {
       ? (activeChapter / (totalChapters - 1)) * 100
       : 0;
 
+  // Track deliberate chapter exploration, not initial renders or collapses.
   const selectChapter = (index: number) => {
+    const chapter = journeyChapters[index];
+
+    if (!chapter) return;
+
+    const isNewExploration =
+      index !== activeChapter || mobileCollapsed;
+
     setActiveChapter(index);
     setMobileCollapsed(false);
+
+    if (isNewExploration) {
+      trackEngagement("journey_chapter", chapter.id);
+    }
   };
 
   const previousChapter = () => {
-    setMobileCollapsed(false);
-    setActiveChapter((previous) =>
-      Math.max(previous - 1, 0)
-    );
+    if (activeChapter > 0) {
+      selectChapter(activeChapter - 1);
+    }
   };
 
   const nextChapter = () => {
-    setMobileCollapsed(false);
-    setActiveChapter((previous) =>
-      Math.min(previous + 1, totalChapters - 1)
-    );
+    if (activeChapter < totalChapters - 1) {
+      selectChapter(activeChapter + 1);
+    }
   };
 
   return (
@@ -648,6 +659,8 @@ export default function Journey() {
 
           <a
             href="#expertise"
+            data-track="navigation_click"
+            data-target="expertise"
             className="group flex items-center gap-2 font-mono text-xs tracking-wide text-emerald-400 transition-colors hover:text-emerald-300"
           >
             CONTINUE EXPLORING

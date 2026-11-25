@@ -58,6 +58,7 @@ import type {
 } from "@/lib/chat-schema";
 
 import { cn } from "@/lib/utils";
+import { trackEngagement } from "@/lib/analytics";
 
 /* ------------------------------------------ */
 /*             Suggested Questions            */
@@ -845,6 +846,10 @@ export default function AskIntelligence() {
         ...previous,
         assistantMessage,
       ]);
+
+      // Track successful responses from both typed and suggested questions.
+      // Never include conversation content in engagement analytics.
+      trackEngagement("ai_question", "answered");
     } catch (requestError) {
       // Remove failed turn from conversation history
       // and restore the question for retry.
@@ -1015,6 +1020,8 @@ export default function AskIntelligence() {
 
           <Link
             href="#connect"
+            data-track="navigation_click"
+            data-target="connect"
             className="group flex items-center gap-2 font-mono text-xs tracking-wider text-emerald-400 hover:text-emerald-300"
           >
             CONTINUE TO CONNECT

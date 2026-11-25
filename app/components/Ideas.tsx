@@ -51,6 +51,7 @@ import {
 } from "@/data/ideas";
 
 import { cn } from "@/lib/utils";
+import { trackEngagement } from "@/lib/analytics";
 
 /* ------------------------------------------ */
 /*              Reusable Engine Card          */
@@ -644,7 +645,7 @@ function IntelligenceCTA() {
             </span>
 
             <h3 className="font-heading text-xl font-semibold text-slate-100 sm:text-2xl">
-              Curiosity doesn't end here.
+              Curiosity doesn&apos;t end here.
             </h3>
 
             <p className="font-sans text-sm leading-relaxed text-slate-400">
@@ -656,6 +657,8 @@ function IntelligenceCTA() {
 
         <Link
           href="#ai"
+          data-track="navigation_click"
+          data-target="ai"
           className={cn(
             buttonVariants({ size: "lg" }),
             "group h-12 w-full shrink-0 rounded-xl",
@@ -695,16 +698,22 @@ export default function Ideas() {
     if (challenge.id !== selectedChallenge.id) {
       setSelectedChallenge(challenge);
       setResult(null);
+
+      trackEngagement("challenge_selected", challenge.id);
     }
   };
 
   const handleRun = () => {
     setResult(selectedChallenge);
+
+    trackEngagement("engine_run", selectedChallenge.id);
   };
 
   const handleReset = () => {
     setResult(null);
     setSelectedChallenge(possibilityChallenges[0]);
+
+    trackEngagement("engine_reset", "engine");
   };
 
   return (
@@ -825,6 +834,8 @@ export default function Ideas() {
 
           <Link
             href="#ai"
+            data-track="navigation_click"
+            data-target="ai"
             className="group flex items-center gap-2 font-mono text-xs tracking-wider text-emerald-400 hover:text-emerald-300"
           >
             CONTINUE EXPLORING

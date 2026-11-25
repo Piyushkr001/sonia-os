@@ -26,7 +26,6 @@ import {
   sendConnectionNotification,
 } from "@/lib/mail";
 
-export const runtime = "nodejs";
 export const maxDuration = 60;
 
 /* ------------------------------------------ */
@@ -384,9 +383,10 @@ export async function POST(
     /* Return success */
 
     return successResponse(saved.id);
-  } catch {
+  } catch (error) {
     console.error(
-      "Connection request processing failed."
+      "Connection request processing failed:",
+      error instanceof Error ? error.message : String(error)
     );
 
     return NextResponse.json(
