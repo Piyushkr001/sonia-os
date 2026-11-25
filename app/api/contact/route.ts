@@ -353,9 +353,10 @@ export async function POST(
         await sendConnectionNotification(data);
 
         notificationStatus = "sent";
-      } catch {
+      } catch (error) {
         console.error(
-          "Connection notification failed."
+          "Connection notification failed:",
+          error instanceof Error ? error.message : String(error)
         );
       }
 
