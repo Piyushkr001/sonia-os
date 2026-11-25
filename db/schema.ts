@@ -6,6 +6,7 @@ import {
   integer,
   timestamp,
   index,
+  varchar,
 } from "drizzle-orm/pg-core";
 
 export const aiTopicEnum = pgEnum("ai_topic", [
@@ -69,3 +70,118 @@ export const aiInteractions = pgTable(
       .on(table.topic),
   ]
 );
+
+
+export const connectionIntentEnum = pgEnum(
+  "connection_intent",
+  [
+    "collaboration",
+    "networking",
+    "innovation",
+    "opportunity",
+    "general",
+  ]
+);
+
+export const connectionStatusEnum = pgEnum(
+  "connection_status",
+  [
+    "new",
+    "reviewed",
+    "replied",
+    "archived",
+  ]
+);
+
+export const notificationStatusEnum = pgEnum(
+  "connection_notification_status",
+  [
+    "pending",
+    "sent",
+    "failed",
+    "disabled",
+  ]
+);
+
+export const connectionRequests = pgTable(
+  "connection_requests",
+  {
+    id: uuid("id")
+      .defaultRandom()
+      .primaryKey(),
+
+    intent: connectionIntentEnum("intent")
+      .notNull(),
+
+    name: varchar("name", {
+      length: 100,
+    }).notNull(),
+
+    email: varchar("email", {
+      length: 254,
+    }).notNull(),
+
+    organization: varchar("organization", {
+      length: 150,
+    }),
+
+    message: text("message")
+      .notNull(),
+
+    status: connectionStatusEnum("status")
+      .default("new")
+      .notNull(),
+
+    notificationStatus: notificationStatusEnum(
+      "notification_status"
+    )
+      .default("disabled")
+      .notNull(),
+
+    consentedAt: timestamp("consented_at", {
+      withTimezone: true,
+    })
+      .defaultNow()
+      .notNull(),
+
+    createdAt: timestamp("created_at", {
+      withTimezone: true,
+    })
+      .defaultNow()
+      .notNull(),
+
+    updatedAt: timestamp("updated_at", {
+      withTimezone: true,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    index("connection_requests_created_at_idx")
+      .on(table.createdAt),
+
+    index("connection_requests_intent_idx")
+      .on(table.intent),
+
+    index("connection_requests_status_idx")
+      .on(table.status),
+  ]
+);
+
+export const contactDailyUsage = pgTable(
+  "contact_daily_usage",
+  {
+    day: text("day")
+      .primaryKey(),
+
+    requests: integer("requests")
+      .default(0)
+      .notNull(),
+  }
+);
+
+export type ConnectionRequest =
+  typeof connectionRequests.$inferSelect;
+
+export type NewConnectionRequest =
+  typeof connectionRequests.$inferInsert;

@@ -4,6 +4,7 @@ import Journey from "./components/Journey";
 import Expertise from "./components/Expertise";
 import Ideas from "./components/Ideas";
 import AskIntelligence from "./components/AskIntelligence";
+import ConnectionPortal from "./components/ConnectionPortal";
 
 export default function Home() {
   return (
@@ -13,6 +14,7 @@ export default function Home() {
       <Expertise/>
       <Ideas/>
       <AskIntelligence/>
+      <ConnectionPortal/>
     </div>
   );
 }
