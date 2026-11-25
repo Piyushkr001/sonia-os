@@ -3,6 +3,7 @@ import HeroSection from "./_shared/HeroSection";
 import Journey from "./components/Journey";
 import Expertise from "./components/Expertise";
 import Ideas from "./components/Ideas";
+import AskIntelligence from "./components/AskIntelligence";
 
 export default function Home() {
   return (
@@ -11,6 +12,7 @@ export default function Home() {
       <Journey/>
       <Expertise/>
       <Ideas/>
+      <AskIntelligence/>
     </div>
   );
 }
