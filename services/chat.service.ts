@@ -7,11 +7,13 @@ import {
 } from "@/lib/chat-schema";
 
 export async function sendChatMessage(
-  payload: ChatRequest
+  payload: ChatRequest,
+  signal?: AbortSignal
 ): Promise<ChatResponse> {
   const response = await api.post(
     "/chat",
-    payload
+    payload,
+    { signal }
   );
 
   return chatResponseSchema.parse(

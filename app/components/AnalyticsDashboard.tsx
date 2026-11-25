@@ -4,6 +4,8 @@ import Link from "next/link";
 import axios from "axios";
 
 import {
+  useEffect,
+  useRef,
   useState,
   type FormEvent,
   type ReactNode,
@@ -60,6 +62,14 @@ import type {
   AnalyticsSummary,
 } from "@/lib/analytics-schema";
 
+import { journeyChapters } from "@/data/journey";
+import {
+  knowledgeModules,
+  leadershipModules,
+} from "@/data/expertise";
+import { possibilityChallenges } from "@/data/ideas";
+import { connectionOptions } from "@/data/connection";
+
 import { cn } from "@/lib/utils";
 
 /* ------------------------------------------ */
@@ -90,6 +100,92 @@ const eventLabels: Record<string, string> = {
   connection_submit: "Connection recorded",
   footer_action: "Footer interaction",
 };
+
+const journeyLabelMap = new Map(
+  journeyChapters.map((chapter) => [
+    chapter.id,
+    `Chapter ${chapter.id} · ${chapter.title}`,
+  ])
+);
+
+const knowledgeLabelMap = new Map(
+  knowledgeModules.map((module) => [
+    module.id,
+    `${module.id} · ${module.title}`,
+  ])
+);
+
+const leadershipLabelMap = new Map(
+  leadershipModules.map((module) => [
+    module.id,
+    `${module.id} · ${module.title}`,
+  ])
+);
+
+const challengeLabelMap = new Map(
+  possibilityChallenges.map((challenge) => [
+    challenge.id,
+    challenge.title,
+  ])
+);
+
+const connectionLabelMap = new Map<string, string>(
+  connectionOptions.map((option) => [
+    option.id,
+    option.title,
+  ])
+);
+
+function formatTargetLabel(
+  eventName: string,
+  target: string
+): string {
+  if (eventName === "journey_chapter") {
+    return journeyLabelMap.get(target) ?? target;
+  }
+
+  if (eventName === "knowledge_node") {
+    return knowledgeLabelMap.get(target) ?? target;
+  }
+
+  if (eventName === "leadership_open") {
+    return leadershipLabelMap.get(target) ?? target;
+  }
+
+  if (
+    eventName === "challenge_selected" ||
+    eventName === "engine_run"
+  ) {
+    return challengeLabelMap.get(target) ?? target;
+  }
+
+  if (eventName === "connection_intent") {
+    return connectionLabelMap.get(target) ?? target;
+  }
+
+  if (
+    eventName === "footer_action" &&
+    target === "privacy"
+  ) {
+    return "Privacy & AI Notice";
+  }
+
+  if (
+    eventName === "footer_action" &&
+    target === "back_to_top"
+  ) {
+    return "Back to Explore";
+  }
+
+  if (target === "leadership") {
+    return "Leadership Lens";
+  }
+
+  return (
+    sectionLabels[target] ??
+    target.replaceAll("_", " ")
+  );
+}
 
 /* ------------------------------------------ */
 /*                 Analytics Card             */
@@ -259,7 +355,7 @@ function SectionEngagement({
                   sectionLabels[section.section] ??
                   section.section
                 }`}
-                className="h-2.5 bg-[#080C10] **:data-[slot=progress-indicator]:bg-emerald-400"
+                className="**:data-[slot=progress-track]:h-2.5 **:data-[slot=progress-track]:bg-[#080C10] **:data-[slot=progress-indicator]:bg-emerald-400"
               />
             </div>
           );
@@ -329,14 +425,11 @@ function PopularInteractions({
                     ] ?? item.eventName}
                   </span>
 
-                  <span className="wrap-break-word text-xs text-slate-500">
-                    {
-                      sectionLabels[item.target] ??
-                        item.target.replaceAll(
-                          "_",
-                          " "
-                        )
-                    }
+                  <span className="wrap-break-word text-xs text-slate-400">
+                    {formatTargetLabel(
+                      item.eventName,
+                      item.target
+                    )}
                   </span>
                 </div>
 
@@ -374,14 +467,32 @@ export default function AnalyticsDashboard() {
   const [error, setError] =
     useState<string | null>(null);
 
+  const abortControllerRef =
+    useRef<AbortController | null>(null);
+  const requestIdRef = useRef(0);
+
+  useEffect(() => {
+    return () => {
+      abortControllerRef.current?.abort();
+    };
+  }, []);
+
   /* Retrieve data through Axios */
 
   async function loadAnalytics(
     range: 7 | 30 = days
   ) {
-    if (!token.trim() || loading) {
+    const trimmedToken = token.trim();
+
+    if (!trimmedToken) {
       return;
     }
+
+    abortControllerRef.current?.abort();
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+    const currentRequestId =
+      ++requestIdRef.current;
 
     setLoading(true);
     setError(null);
@@ -389,29 +500,58 @@ export default function AnalyticsDashboard() {
     try {
       const response =
         await getAnalyticsSummary(
-          token.trim(),
-          range
+          trimmedToken,
+          range,
+          controller.signal
         );
+
+      if (
+        controller.signal.aborted ||
+        currentRequestId !== requestIdRef.current
+      ) {
+        return;
+      }
 
       setData(response);
       setDays(range);
     } catch (requestError) {
       if (
-        axios.isAxiosError(requestError) &&
-        requestError.response?.status === 401
+        axios.isCancel(requestError) ||
+        controller.signal.aborted ||
+        currentRequestId !== requestIdRef.current
       ) {
-        setData(null);
-
-        setError(
-          "Invalid analytics access token."
-        );
-      } else {
-        setError(
-          "Unable to retrieve analytics. Please try again."
-        );
+        return;
       }
+
+      if (axios.isAxiosError(requestError)) {
+        const status = requestError.response?.status;
+
+        if (status === 401) {
+          setData(null);
+          setError(
+            "Invalid analytics access token."
+          );
+          return;
+        }
+
+        if (status === 429) {
+          setError(
+            "Too many analytics requests. Please wait a moment and try again."
+          );
+          return;
+        }
+      }
+
+      setError(
+        "Unable to retrieve analytics. Please try again."
+      );
     } finally {
-      setLoading(false);
+      if (
+        currentRequestId === requestIdRef.current
+      ) {
+        abortControllerRef.current = null;
+        setLoading(false);
+      }
     }
   }
 
@@ -424,6 +564,10 @@ export default function AnalyticsDashboard() {
   }
 
   function lockDashboard() {
+    abortControllerRef.current?.abort();
+    abortControllerRef.current = null;
+    requestIdRef.current += 1;
+    setLoading(false);
     setToken("");
     setData(null);
     setError(null);
@@ -655,7 +799,10 @@ export default function AnalyticsDashboard() {
 
             {/* Metrics - Responsive Flexbox */}
 
-            <div className="flex w-full flex-wrap items-stretch gap-6">
+            <div
+              aria-busy={loading}
+              className="flex w-full flex-wrap items-stretch gap-6"
+            >
               <MetricCard
                 title="Visitor sessions"
                 value={data.sessions}
@@ -709,6 +856,15 @@ export default function AnalyticsDashboard() {
 
               <PopularInteractions data={data} />
             </div>
+
+            {/* Empty State Notice */}
+
+            {data.sessions === 0 && (
+              <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[#121A20] p-4 text-sm text-slate-400">
+                <Activity className="size-5 shrink-0 text-emerald-400" />
+                No consent-based visitor sessions were recorded in the last {data.days} days. Operational AI and connection totals remain visible above.
+              </div>
+            )}
 
             {/* Data Explanation */}
 

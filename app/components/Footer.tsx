@@ -375,9 +375,9 @@ function PrivacyNotice() {
 
               <p className="text-sm leading-relaxed text-slate-400">
                 SONIA.OS is an independently developed
-                digital experience created for a
-                developer hiring challenge. It is not
-                an official i-SmokeStack website.
+                digital experience created for the
+                i-SmokeStack developer hiring challenge.
+                It is not an official i-SmokeStack website.
               </p>
             </div>
 
@@ -390,11 +390,13 @@ function PrivacyNotice() {
 
               <p className="text-sm leading-relaxed text-slate-400">
                 Ask Intelligence uses Google Gemini
-                and curated professional information.
-                It does not impersonate Sonia.
-                AI-generated responses may contain errors.
-                Questions and recent conversation context
-                are transmitted to the AI provider.
+                and a curated application knowledge base.
+                It acts as a guide and does not impersonate
+                Sonia. AI-generated responses may contain
+                inaccuracies; always check listed sources.
+                Your question and up to 8 recent turns
+                of the current chat are transmitted to
+                Google Gemini to generate an answer.
               </p>
             </div>
 
@@ -406,41 +408,69 @@ function PrivacyNotice() {
               </h4>
 
               <p className="text-sm leading-relaxed text-slate-400">
-                Optional engagement analytics starts only
-                after you enable it. A random browser-session
-                identifier, viewport category, section views,
-                selected interactions and estimated visible-page
-                duration may be recorded. Engagement events do
-                not include your chat text or contact details.
-                Use the analytics preference control below the
-                footer to enable or disable future tracking.
-                Disabling tracking does not delete existing records.
+                Optional engagement tracking starts only
+                after you explicitly enable it via the
+                consent prompt or the analytics control
+                below the footer. When enabled, a random
+                browser-session identifier, viewport
+                category (mobile, tablet or desktop),
+                deduplicated section views, selected
+                feature interactions and estimated
+                visible-page duration (15-second
+                heartbeats paused when the tab is hidden)
+                are batched and stored in Neon PostgreSQL.
               </p>
 
               <p className="text-sm leading-relaxed text-slate-400">
-                AI operational metadata, including topics,
-                processing outcomes and response times, and
-                submitted connection requests are recorded
-                separately, regardless of your optional analytics
-                preference. Chat transcripts are not stored in
-                the application database.
+                Engagement events do not include your
+                chat text, contact form details, full
+                URLs or raw IP addresses. Disabling
+                tracking clears your active browser
+                session identifier and stops future
+                collection, without deleting previously
+                recorded aggregate events.
               </p>
             </div>
 
-            {/* Connection Requests */}
+            {/* Operational Metadata & Security */}
 
             <div className="flex flex-col gap-2">
               <h4 className="font-heading font-semibold text-emerald-300">
-                Connection Requests
+                Operational Metadata &amp; Rate Limiting
               </h4>
 
               <p className="text-sm leading-relaxed text-slate-400">
-                Information submitted through the
-                Connection Portal is stored to process
-                the request and may be forwarded to
-                an authorized recipient by email.
-                Avoid submitting confidential or
-                sensitive personal information.
+                To enforce quotas and protect API routes
+                from abuse, operational AI metadata
+                (topic classification, outcome status,
+                response duration and daily counts) and
+                temporary rate-limit buckets using
+                one-way hashed client identifiers (never
+                raw IP addresses) are stored regardless of
+                optional analytics preferences. Chat
+                transcripts are not saved in the
+                application database.
+              </p>
+            </div>
+
+            {/* Connection Requests & Retention */}
+
+            <div className="flex flex-col gap-2">
+              <h4 className="font-heading font-semibold text-emerald-300">
+                Connection Requests &amp; Retention
+              </h4>
+
+              <p className="text-sm leading-relaxed text-slate-400">
+                Details submitted through the Connection
+                Portal are stored in Neon PostgreSQL and,
+                when email notifications are enabled,
+                forwarded to the configured authorized
+                recipient via SMTP. Records are retained
+                for challenge review and operational
+                monitoring; automated purging is not
+                currently enabled. Avoid submitting
+                confidential or sensitive personal
+                information.
               </p>
             </div>
           </div>

@@ -45,29 +45,25 @@ export function AnimatedGridPattern({
 }: AnimatedGridPatternProps) {
   const id = useId()
   const containerRef = useRef<SVGSVGElement | null>(null)
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
+  const dimensionsRef = useRef({ width: 0, height: 0 })
   const [squares, setSquares] = useState<Array<Square>>([])
 
-  const getPos = useCallback((): [number, number] => {
-    return [
-      Math.floor((Math.random() * dimensions.width) / width),
-      Math.floor((Math.random() * dimensions.height) / height),
-    ]
-  }, [dimensions.height, dimensions.width, height, width])
-
-  const generateSquares = useCallback(
-    (count: number) => {
-      return Array.from({ length: count }, (_, i) => ({
-        id: i,
-        pos: getPos(),
-        iteration: 0,
-      }))
+  const getPos = useCallback(
+    (containerWidth: number, containerHeight: number): [number, number] => {
+      return [
+        Math.floor((Math.random() * containerWidth) / width),
+        Math.floor((Math.random() * containerHeight) / height),
+      ]
     },
-    [getPos]
+    [height, width]
   )
 
   const updateSquarePosition = useCallback(
     (squareId: number) => {
+      const { width: containerWidth, height: containerHeight } =
+        dimensionsRef.current
+      if (!containerWidth || !containerHeight) return
+
       setSquares((currentSquares) => {
         const current = currentSquares[squareId]
         if (!current || current.id !== squareId) return currentSquares
@@ -75,7 +71,7 @@ export function AnimatedGridPattern({
         const nextSquares = currentSquares.slice()
         nextSquares[squareId] = {
           ...current,
-          pos: getPos(),
+          pos: getPos(containerWidth, containerHeight),
           iteration: current.iteration + 1,
         }
 
@@ -86,41 +82,40 @@ export function AnimatedGridPattern({
   )
 
   useEffect(() => {
-    if (dimensions.width && dimensions.height) {
-      setSquares(generateSquares(numSquares))
-    }
-  }, [dimensions.width, dimensions.height, generateSquares, numSquares])
-
-  useEffect(() => {
     const element = containerRef.current
-    let resizeObserver: ResizeObserver | null = null
+    if (!element) return
 
-    if (element) {
-      resizeObserver = new ResizeObserver((entries) => {
-        for (const entry of entries) {
-          setDimensions((currentDimensions) => {
-            const nextWidth = entry.contentRect.width
-            const nextHeight = entry.contentRect.height
-            if (
-              currentDimensions.width === nextWidth &&
-              currentDimensions.height === nextHeight
-            ) {
-              return currentDimensions
-            }
-            return { width: nextWidth, height: nextHeight }
-          })
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const nextWidth = entry.contentRect.width
+        const nextHeight = entry.contentRect.height
+        if (
+          dimensionsRef.current.width === nextWidth &&
+          dimensionsRef.current.height === nextHeight
+        ) {
+          continue
         }
-      })
 
-      resizeObserver.observe(element)
-    }
+        dimensionsRef.current = { width: nextWidth, height: nextHeight }
+
+        if (nextWidth && nextHeight) {
+          setSquares(
+            Array.from({ length: numSquares }, (_, i) => ({
+              id: i,
+              pos: getPos(nextWidth, nextHeight),
+              iteration: 0,
+            }))
+          )
+        }
+      }
+    })
+
+    resizeObserver.observe(element)
 
     return () => {
-      if (resizeObserver) {
-        resizeObserver.disconnect()
-      }
+      resizeObserver.disconnect()
     }
-  }, [])
+  }, [getPos, numSquares])
 
   return (
     <svg

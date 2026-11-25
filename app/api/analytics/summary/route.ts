@@ -1,4 +1,5 @@
 import {
+  connection,
   NextRequest,
   NextResponse,
 } from "next/server";
@@ -29,6 +30,16 @@ import {
 import {
   sectionIds,
 } from "@/lib/analytics-schema";
+
+import {
+  checkRateLimit,
+  rateLimitExceededResponse,
+} from "@/lib/rate-limit";
+
+import {
+  getClientFingerprint,
+  readPositiveIntEnv,
+} from "@/lib/security";
 
 /* Verify the private analytics token */
 
@@ -81,6 +92,42 @@ function json(
 export async function GET(
   request: NextRequest
 ) {
+  await connection();
+
+  try {
+    const rateLimit = await checkRateLimit({
+      scope: "analytics_summary",
+      identifier: getClientFingerprint(request),
+      maxRequests: readPositiveIntEnv(
+        "RATE_LIMIT_ANALYTICS_SUMMARY_MAX",
+        20
+      ),
+      windowSeconds: readPositiveIntEnv(
+        "RATE_LIMIT_ANALYTICS_SUMMARY_WINDOW_SEC",
+        60
+      ),
+    });
+
+    if (!rateLimit.allowed) {
+      return rateLimitExceededResponse(
+        rateLimit.retryAfterSeconds,
+        "Too many analytics requests. Please wait a moment and try again."
+      );
+    }
+  } catch (error) {
+    console.error(
+      "Unable to verify analytics rate limit:",
+      error instanceof Error ? error.message : String(error)
+    );
+
+    return json(
+      {
+        error: "Analytics temporarily unavailable.",
+      },
+      503
+    );
+  }
+
   if (!isAuthorized(request)) {
     return json(
       {
@@ -319,9 +366,10 @@ export async function GET(
 
       topActions: actionRows,
     });
-  } catch {
+  } catch (error) {
     console.error(
-      "Unable to retrieve analytics summary."
+      "Unable to retrieve analytics summary:",
+      error instanceof Error ? error.message : String(error)
     );
 
     return json(

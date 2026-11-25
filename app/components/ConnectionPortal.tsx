@@ -4,6 +4,7 @@ import Link from "next/link";
 import axios from "axios";
 
 import {
+  useEffect,
   useRef,
   useState,
   type FormEvent,
@@ -832,7 +833,7 @@ function ConnectionForm({
                           checked === true
                         )
                       }
-                      className="mt-0.5 border-emerald-400/40 data-[state=checked]:border-emerald-400 data-[state=checked]:bg-emerald-400 data-[state=checked]:text-slate-950"
+                      className="mt-0.5 border-emerald-400/40 data-checked:border-emerald-400 data-checked:bg-emerald-400 data-checked:text-slate-950"
                     />
 
                     <Label
@@ -954,6 +955,14 @@ export default function ConnectionPortal() {
 
   // Synchronous duplicate-click prevention.
   const pendingRef = useRef(false);
+  const abortControllerRef =
+    useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    return () => {
+      abortControllerRef.current?.abort();
+    };
+  }, []);
 
   // Preserve request ID when retrying
   // an unchanged submission.
@@ -1045,6 +1054,8 @@ export default function ConnectionPortal() {
     }
 
     pendingRef.current = true;
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
 
     setIsSubmitting(true);
 
@@ -1052,18 +1063,32 @@ export default function ConnectionPortal() {
       /* Axios API call */
 
       const response =
-        await submitConnectionRequest({
-          ...validation.data,
+        await submitConnectionRequest(
+          {
+            ...validation.data,
 
-          requestId:
-            requestRef.current.id,
-        });
+            requestId:
+              requestRef.current.id,
+          },
+          controller.signal
+        );
+
+      if (controller.signal.aborted) {
+        return;
+      }
 
       setResult(response);
 
       // Record only confirmed submissions, without personal data.
       trackEngagement("connection_submit", "recorded");
     } catch (error) {
+      if (
+        axios.isCancel(error) ||
+        controller.signal.aborted
+      ) {
+        return;
+      }
+
       if (axios.isAxiosError(error)) {
         const message =
           error.response?.data?.error;
@@ -1083,9 +1108,12 @@ export default function ConnectionPortal() {
         );
       }
     } finally {
-      pendingRef.current = false;
+      if (abortControllerRef.current === controller) {
+        abortControllerRef.current = null;
+        pendingRef.current = false;
 
-      setIsSubmitting(false);
+        setIsSubmitting(false);
+      }
     }
   };
 

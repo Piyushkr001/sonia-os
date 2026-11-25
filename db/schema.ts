@@ -248,7 +248,58 @@ export const engagementEvents = pgTable(
 
     index("engagement_events_created_at_idx")
       .on(table.createdAt),
+
+    index("engagement_events_created_name_idx")
+      .on(table.createdAt, table.eventName),
   ]
+);
+
+export const apiRateLimits = pgTable(
+  "api_rate_limits",
+  {
+    key: varchar("key", {
+      length: 160,
+    }).primaryKey(),
+
+    hits: integer("hits")
+      .default(1)
+      .notNull(),
+
+    windowEndsAt: timestamp("window_ends_at", {
+      withTimezone: true,
+    }).notNull(),
+
+    updatedAt: timestamp("updated_at", {
+      withTimezone: true,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    index("api_rate_limits_window_ends_idx")
+      .on(table.windowEndsAt),
+  ]
+);
+
+export const analyticsDailyUsage = pgTable(
+  "analytics_daily_usage",
+  {
+    day: text("day").primaryKey(),
+
+    events: integer("events")
+      .default(0)
+      .notNull(),
+
+    sessions: integer("sessions")
+      .default(0)
+      .notNull(),
+
+    updatedAt: timestamp("updated_at", {
+      withTimezone: true,
+    })
+      .defaultNow()
+      .notNull(),
+  }
 );
 
 export type VisitorSession =

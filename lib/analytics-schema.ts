@@ -145,6 +145,18 @@ export type AnalyticsEventInput = z.infer<
   typeof analyticsEventSchema
 >;
 
+export const analyticsEventBatchSchema = z.object({
+  events: z
+    .array(analyticsEventSchema)
+    .min(1)
+    .max(20),
+});
+
+export const analyticsIngestSchema = z.union([
+  analyticsEventSchema,
+  analyticsEventBatchSchema,
+]);
+
 export const analyticsSummarySchema = z.object({
   sessions: z.number(),
 

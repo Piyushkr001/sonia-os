@@ -777,6 +777,14 @@ export default function AskIntelligence() {
 
   // Prevent simultaneous requests from rapid clicks.
   const pendingRef = useRef(false);
+  const abortControllerRef =
+    useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    return () => {
+      abortControllerRef.current?.abort();
+    };
+  }, []);
 
   /* ---------------------------------------- */
   /*               Submit Question            */
@@ -796,6 +804,8 @@ export default function AskIntelligence() {
     }
 
     pendingRef.current = true;
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
 
     const userMessage: ChatMessage = {
       id: crypto.randomUUID(),
@@ -827,10 +837,17 @@ export default function AskIntelligence() {
 
     try {
       // Axios API call through service layer.
-      const response = await sendChatMessage({
-        question: trimmedQuestion,
-        history,
-      });
+      const response = await sendChatMessage(
+        {
+          question: trimmedQuestion,
+          history,
+        },
+        controller.signal
+      );
+
+      if (controller.signal.aborted) {
+        return;
+      }
 
       const assistantMessage: ChatMessage = {
         id: crypto.randomUUID(),
@@ -851,6 +868,13 @@ export default function AskIntelligence() {
       // Never include conversation content in engagement analytics.
       trackEngagement("ai_question", "answered");
     } catch (requestError) {
+      if (
+        axios.isCancel(requestError) ||
+        controller.signal.aborted
+      ) {
+        return;
+      }
+
       // Remove failed turn from conversation history
       // and restore the question for retry.
       setMessages((previous) =>
@@ -877,9 +901,11 @@ export default function AskIntelligence() {
         );
       }
     } finally {
-      pendingRef.current = false;
-
-      setIsLoading(false);
+      if (abortControllerRef.current === controller) {
+        abortControllerRef.current = null;
+        pendingRef.current = false;
+        setIsLoading(false);
+      }
     }
   };
 
@@ -888,8 +914,11 @@ export default function AskIntelligence() {
   /* ---------------------------------------- */
 
   const handleReset = () => {
-    if (pendingRef.current) return;
+    abortControllerRef.current?.abort();
+    abortControllerRef.current = null;
+    pendingRef.current = false;
 
+    setIsLoading(false);
     setMessages(initialMessages);
     setInput("");
     setError(null);

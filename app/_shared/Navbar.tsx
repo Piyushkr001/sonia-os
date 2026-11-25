@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/sheet";
 
 import {
+  Command,
   CommandDialog,
   CommandEmpty,
   CommandGroup,
@@ -235,6 +236,8 @@ function Navbar() {
             <Button
               variant="outline"
               aria-label="Open command palette"
+              aria-haspopup="dialog"
+              aria-expanded={commandOpen}
               onClick={() => setCommandOpen(true)}
               className={cn(
                 "flex items-center gap-2",
@@ -281,6 +284,8 @@ function Navbar() {
               variant="ghost"
               size="icon"
               aria-label="Search navigation"
+              aria-haspopup="dialog"
+              aria-expanded={commandOpen}
               onClick={() => setCommandOpen(true)}
               className="text-slate-400 hover:bg-white/5 hover:text-emerald-400"
             >
@@ -403,47 +408,50 @@ function Navbar() {
       <CommandDialog
         open={commandOpen}
         onOpenChange={setCommandOpen}
+        className="border border-emerald-400/20 bg-[#121A20] text-slate-100"
       >
-        <CommandInput placeholder="Explore SONIA.OS..." />
+        <Command className="bg-[#121A20] text-slate-100">
+          <CommandInput placeholder="Explore SONIA.OS..." />
 
-        <CommandList>
-          <CommandEmpty>
-            No matching sections found.
-          </CommandEmpty>
+          <CommandList>
+            <CommandEmpty>
+              No matching sections found.
+            </CommandEmpty>
 
-          <CommandGroup heading="Navigation">
-            {navLinks.map((link) => {
-              const Icon = link.icon;
+            <CommandGroup heading="Navigation">
+              {navLinks.map((link) => {
+                const Icon = link.icon;
 
-              return (
-                <CommandItem
-                  key={link.href}
-                  value={link.title}
-                  onSelect={() =>
-                    handleNavigation(link.href)
-                  }
-                >
-                  <Icon className="mr-2 size-4" />
+                return (
+                  <CommandItem
+                    key={link.href}
+                    value={link.title}
+                    onSelect={() =>
+                      handleNavigation(link.href)
+                    }
+                  >
+                    <Icon className="mr-2 size-4" />
 
-                  <span>{link.title}</span>
-                </CommandItem>
-              );
-            })}
-          </CommandGroup>
+                    <span>{link.title}</span>
+                  </CommandItem>
+                );
+              })}
+            </CommandGroup>
 
-          <CommandGroup heading="Connect">
-            <CommandItem
-              value="Let's Connect"
-              onSelect={() =>
-                handleNavigation("#connect")
-              }
-            >
-              <ArrowUpRight className="mr-2 size-4" />
+            <CommandGroup heading="Connect">
+              <CommandItem
+                value="Let's Connect"
+                onSelect={() =>
+                  handleNavigation("#connect")
+                }
+              >
+                <ArrowUpRight className="mr-2 size-4" />
 
-              <span>Let&apos;s Connect</span>
-            </CommandItem>
-          </CommandGroup>
-        </CommandList>
+                <span>Let&apos;s Connect</span>
+              </CommandItem>
+            </CommandGroup>
+          </CommandList>
+        </Command>
       </CommandDialog>
     </>
   );

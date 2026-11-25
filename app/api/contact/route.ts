@@ -26,7 +26,38 @@ import {
   sendConnectionNotification,
 } from "@/lib/mail";
 
+import {
+  checkRateLimit,
+  rateLimitExceededResponse,
+} from "@/lib/rate-limit";
+
+import {
+  getClientFingerprint,
+  isSameOriginRequest,
+  readPositiveIntEnv,
+} from "@/lib/security";
+
 export const maxDuration = 60;
+
+function jsonError(
+  error: string,
+  status: number,
+  headers?: Record<string, string>
+) {
+  return NextResponse.json(
+    {
+      success: false,
+      error,
+    },
+    {
+      status,
+      headers: {
+        "Cache-Control": "no-store",
+        ...headers,
+      },
+    }
+  );
+}
 
 /* ------------------------------------------ */
 /*              Success Response              */
@@ -65,18 +96,10 @@ async function reserveDailySubmission() {
     .toISOString()
     .slice(0, 10);
 
-  const limit = Number(
-    process.env.CONTACT_DAILY_LIMIT || 100
+  const limit = readPositiveIntEnv(
+    "CONTACT_DAILY_LIMIT",
+    100
   );
-
-  if (
-    !Number.isSafeInteger(limit) ||
-    limit < 1
-  ) {
-    throw new Error(
-      "Invalid CONTACT_DAILY_LIMIT."
-    );
-  }
 
   const result = await db
     .insert(contactDailyUsage)
@@ -140,13 +163,9 @@ function isSameSubmission(
 }
 
 function conflictResponse() {
-  return NextResponse.json(
-    {
-      success: false,
-      error:
-        "This request identifier is already in use. Please start a new request.",
-    },
-    { status: 409 }
+  return jsonError(
+    "This request identifier is already in use. Please start a new request.",
+    409
   );
 }
 
@@ -157,6 +176,13 @@ function conflictResponse() {
 export async function POST(
   request: NextRequest
 ) {
+  if (!isSameOriginRequest(request)) {
+    return jsonError(
+      "Cross-origin requests are not allowed.",
+      403
+    );
+  }
+
   let body: unknown;
 
   try {
@@ -166,13 +192,20 @@ export async function POST(
     if (
       !contentType.includes("application/json")
     ) {
-      return NextResponse.json(
-        {
-          success: false,
-          error:
-            "Content-Type must be application/json.",
-        },
-        { status: 415 }
+      return jsonError(
+        "Content-Type must be application/json.",
+        415
+      );
+    }
+
+    const declaredLength = Number(
+      request.headers.get("content-length") ?? 0
+    );
+
+    if (declaredLength > 16384) {
+      return jsonError(
+        "Request is too large.",
+        413
       );
     }
 
@@ -182,23 +215,17 @@ export async function POST(
       new TextEncoder().encode(rawBody).length >
       16384
     ) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Request is too large.",
-        },
-        { status: 413 }
+      return jsonError(
+        "Request is too large.",
+        413
       );
     }
 
     body = JSON.parse(rawBody);
   } catch {
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Invalid JSON request.",
-      },
-      { status: 400 }
+    return jsonError(
+      "Invalid JSON request.",
+      400
     );
   }
 
@@ -208,15 +235,10 @@ export async function POST(
     contactRequestSchema.safeParse(body);
 
   if (!validation.success) {
-    return NextResponse.json(
-      {
-        success: false,
-
-        error:
-          validation.error.issues[0]?.message ||
-          "Invalid connection request.",
-      },
-      { status: 400 }
+    return jsonError(
+      validation.error.issues[0]?.message ||
+        "Invalid connection request.",
+      400
     );
   }
 
@@ -225,19 +247,16 @@ export async function POST(
   /* Basic honeypot spam protection */
 
   if (data.website.trim()) {
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Unable to process this request.",
-      },
-      { status: 400 }
+    return jsonError(
+      "Unable to process this request.",
+      400
     );
   }
 
   try {
     const db = getDb();
 
-    /* Check for a previously saved request */
+    /* Check for a previously saved request before consuming quota */
 
     const existing =
       await findExistingRequest(
@@ -248,6 +267,28 @@ export async function POST(
       return isSameSubmission(existing, data)
         ? successResponse(existing.id, 200)
         : conflictResponse();
+    }
+
+    /* Enforce distributed per-client rate limit */
+
+    const rateLimit = await checkRateLimit({
+      scope: "contact",
+      identifier: getClientFingerprint(request),
+      maxRequests: readPositiveIntEnv(
+        "RATE_LIMIT_CONTACT_MAX",
+        5
+      ),
+      windowSeconds: readPositiveIntEnv(
+        "RATE_LIMIT_CONTACT_WINDOW_SEC",
+        900
+      ),
+    });
+
+    if (!rateLimit.allowed) {
+      return rateLimitExceededResponse(
+        rateLimit.retryAfterSeconds,
+        "Too many connection requests sent recently. Please wait before trying again."
+      );
     }
 
     /* Reserve daily submission quota */
@@ -268,19 +309,11 @@ export async function POST(
         )
       );
 
-      return NextResponse.json(
+      return jsonError(
+        "The daily connection request limit has been reached. Please try again later.",
+        429,
         {
-          success: false,
-
-          error:
-            "The daily connection request limit has been reached. Please try again later.",
-        },
-        {
-          status: 429,
-
-          headers: {
-            "Retry-After": String(retryAfter),
-          },
+          "Retry-After": String(retryAfter),
         }
       );
     }
@@ -390,14 +423,9 @@ export async function POST(
       error instanceof Error ? error.message : String(error)
     );
 
-    return NextResponse.json(
-      {
-        success: false,
-
-        error:
-          "Unable to submit your connection request. Please try again.",
-      },
-      { status: 503 }
+    return jsonError(
+      "Unable to submit your connection request. Please try again.",
+      503
     );
   }
 }
