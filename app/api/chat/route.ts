@@ -14,7 +14,10 @@ import {
   type ChatTopic,
 } from "@/lib/chat-schema";
 
-import { generateAIResponse } from "@/lib/gemini";
+import {
+  describeGeminiError,
+  generateAIResponse,
+} from "@/lib/gemini";
 
 export const maxDuration = 60;
 
@@ -210,8 +213,10 @@ export async function POST(request: NextRequest) {
         },
       }
     );
-  } catch {
-    console.error("AI discovery request failed.");
+  } catch (error) {
+    console.error(
+      `AI discovery request failed: ${describeGeminiError(error)}`
+    );
 
     await logInteraction(
       "other",

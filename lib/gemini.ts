@@ -12,6 +12,42 @@ import {
 const FALLBACK_ANSWER =
   "I don't have enough verified information to answer that question accurately. You can explore the available professional information or ask about i-SmokeStack's philosophy.";
 
+const DEFAULT_MODEL = "gemini-3.5-flash";
+
+// Comma-separated list, overridable with GEMINI_FALLBACK_MODELS.
+const DEFAULT_FALLBACK_MODELS = "gemini-3.5-flash,gemini-3.8-flash";
+
+const RETRYABLE_STATUS_CODES = new Set([429, 500, 502, 503, 504]);
+
+function isRetryableGeminiError(error: unknown) {
+  if (!axios.isAxiosError(error)) {
+    return false;
+  }
+
+  // Network errors and timeouts have no response.
+  if (!error.response) {
+    return true;
+  }
+
+  return RETRYABLE_STATUS_CODES.has(error.response.status);
+}
+
+export function describeGeminiError(error: unknown) {
+  if (axios.isAxiosError(error)) {
+    const upstreamMessage = (
+      error.response?.data as
+        | { error?: { message?: string } }
+        | undefined
+    )?.error?.message;
+
+    return `${error.response?.status ?? error.code ?? "network"} ${
+      upstreamMessage ?? error.message
+    }`;
+  }
+
+  return error instanceof Error ? error.message : String(error);
+}
+
 interface GeminiResponse {
   candidates?: Array<{
     finishReason?: string;
@@ -30,8 +66,15 @@ export async function generateAIResponse(
 ) {
   const apiKey = process.env.GEMINI_API_KEY;
 
-  const model =
-    process.env.GEMINI_MODEL || "gemini-2.5-flash";
+  const primaryModel =
+    process.env.GEMINI_MODEL || DEFAULT_MODEL;
+
+  const fallbackModels = (
+    process.env.GEMINI_FALLBACK_MODELS || DEFAULT_FALLBACK_MODELS
+  )
+    .split(",")
+    .map((name) => name.trim())
+    .filter(Boolean);
 
   if (!apiKey) {
     throw new Error("GEMINI_API_KEY is not configured.");
@@ -74,87 +117,114 @@ ${JSON.stringify(knowledgeBase)}
     currentQuestion: request.question,
   });
 
-  const response = await axios.post<GeminiResponse>(
-    `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(
-      model
-    )}:generateContent`,
+  const requestBody = {
+    systemInstruction: {
+      parts: [
+        {
+          text: systemInstruction,
+        },
+      ],
+    },
 
-    {
-      systemInstruction: {
+    contents: [
+      {
+        role: "user",
         parts: [
           {
-            text: systemInstruction,
+            text: userInput,
           },
         ],
       },
+    ],
 
-      contents: [
-        {
-          role: "user",
-          parts: [
-            {
-              text: userInput,
-            },
-          ],
-        },
-      ],
+    generationConfig: {
+      maxOutputTokens: 2048,
 
-      generationConfig: {
-        temperature: 0.2,
+      responseMimeType: "application/json",
 
-        maxOutputTokens: 2048,
+      responseJsonSchema: {
+        type: "object",
 
-        responseMimeType: "application/json",
-
-        responseSchema: {
-          type: "OBJECT",
-
-          properties: {
-            answer: {
-              type: "STRING",
-            },
-
-            topic: {
-              type: "STRING",
-
-              enum: [
-                "profile",
-                "journey",
-                "expertise",
-                "leadership",
-                "philosophy",
-                "connection",
-                "other",
-              ],
-            },
-
-            sourceIds: {
-              type: "ARRAY",
-
-              items: {
-                type: "STRING",
-              },
-            },
+        properties: {
+          answer: {
+            type: "string",
           },
 
-          required: [
-            "answer",
-            "topic",
-            "sourceIds",
-          ],
+          topic: {
+            type: "string",
+
+            enum: [
+              "profile",
+              "journey",
+              "expertise",
+              "leadership",
+              "philosophy",
+              "connection",
+              "other",
+            ],
+          },
+
+          sourceIds: {
+            type: "array",
+
+            items: {
+              type: "string",
+            },
+          },
         },
+
+        required: [
+          "answer",
+          "topic",
+          "sourceIds",
+        ],
       },
     },
+  };
 
-    {
-      headers: {
-        "Content-Type": "application/json",
-        "x-goog-api-key": apiKey,
-      },
+  // Try the primary model first, then fall back when a model is
+  // overloaded, rate limited or temporarily unavailable.
+  const models = [
+    ...new Set([primaryModel, ...fallbackModels]),
+  ];
 
-      timeout: 25000,
+  let response: { data: GeminiResponse } | undefined;
+  let lastError: unknown;
+
+  for (const model of models) {
+    try {
+      response = await axios.post<GeminiResponse>(
+        `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(
+          model
+        )}:generateContent`,
+        requestBody,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "x-goog-api-key": apiKey,
+          },
+
+          timeout: 20000,
+        }
+      );
+
+      break;
+    } catch (error) {
+      lastError = error;
+
+      console.warn(
+        `Gemini model "${model}" failed: ${describeGeminiError(error)}`
+      );
+
+      if (!isRetryableGeminiError(error)) {
+        throw error;
+      }
     }
-  );
+  }
+
+  if (!response) {
+    throw lastError ?? new Error("No Gemini model was available.");
+  }
 
   const candidate = response.data.candidates?.[0];
 
