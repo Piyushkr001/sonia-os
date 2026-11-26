@@ -12,72 +12,87 @@ export interface KnowledgeSource {
 export const knowledgeBase: KnowledgeSource[] = [
   {
     id: "founder-profile",
-    title: "Founder Profile",
+    title: "Soniaa Specialist — Founder Profile",
     category: "profile",
-    content: "The i-SmokeStack hiring challenge identifies Soniaa Specialist as the founder. Her public LinkedIn profile uses the professional name Soniaa Specialist. The accessible profile does not establish a complete employment or education history.",
-    source: "Hiring challenge brief; public LinkedIn profile",
-    url: "https://www.linkedin.com/in/soniaaspecialist/",
+    content: "Soniaa Specialist’s LinkedIn profile identifies her as founder of i-SmokeStack and Zero Confusion, based in the Los Angeles Metropolitan Area. Her headline describes 20 years of untangling startup challenges. The Experience section lists Chief Executive Officer at i-SmokeStack.",
+    source: "LinkedIn profile PDF, pages 1–2",
+    url: "https://www.linkedin.com/in/soniaaspecialist/"
   },
   {
-    id: "marketing-consultancy",
-    title: "Marketing and Sales Consultancy",
-    category: "expertise",
-    content: "The SoniaaSpecialist LinkedIn company page describes experience in marketing and sales and a consultancy intended to help other organizations improve their marketing capabilities. It lists 2013 as its founding year.",
-    source: "SoniaaSpecialist LinkedIn company page",
-    url: "https://in.linkedin.com/company/soniaspecialist",
+    id: "career-foundations",
+    title: "Cross-industry Experience",
+    category: "journey",
+    content: "Soniaa states that she worked inside companies across industries for 15 years before starting i-SmokeStack. Her profile does not identify previous employers, individual job titles, education or detailed employment dates. Do not infer those details or add the 15 years to the 20-year headline.",
+    source: "LinkedIn profile PDF, page 1",
+    url: "https://www.linkedin.com/in/soniaaspecialist/"
   },
   {
     id: "company-history",
-    title: "i-SmokeStack Background",
+    title: "i-SmokeStack — Founding",
     category: "journey",
-    content: "The i-SmokeStack LinkedIn company page lists 2019 as the founding year. This is the company founding year, not necessarily the date of an individual appointment.",
-    source: "i-SmokeStack LinkedIn company page",
-    url: "https://www.linkedin.com/company/smokestackgeeks",
+    content: "Soniaa states that she started i-SmokeStack in 2019 after observing promising founders struggling to identify the real problems in their businesses. Her motivation was to offer direct and honest guidance.",
+    source: "LinkedIn profile PDF, page 1",
+    url: "https://www.linkedin.com/in/soniaaspecialist/"
+  },
+  {
+    id: "startup-support",
+    title: "i-SmokeStack — Business Support",
+    category: "expertise",
+    content: "The venture works closely with early-stage and growing companies across positioning, communication, operations, customer experience, internal alignment, decision-making and growth direction. Soniaa describes the work as understanding problems and building solutions alongside clients.",
+    source: "LinkedIn profile PDF, page 1",
+    url: "https://www.linkedin.com/in/soniaaspecialist/"
+  },
+  {
+    id: "zero-confusion",
+    title: "Zero Confusion",
+    category: "journey",
+    content: "Soniaa founded Zero Confusion for founders who have strong ideas but feel overwhelmed or are not ready for structured consulting. It provides space for clarity before scaling, branding, hiring, marketing or raising money. Its founding date is not given in the profile.",
+    source: "LinkedIn profile PDF, page 1",
+    url: "https://www.linkedin.com/in/soniaaspecialist/"
+  },
+  {
+    id: "leadership-approach",
+    title: "Leadership and Collaboration",
+    category: "leadership",
+    content: "Soniaa describes a preference for honest conversations, direct guidance, clear thinking and solving the underlying problem. She emphasizes working with founders rather than merely advising. These statements describe her own account of her approach; the profile does not establish measurable leadership outcomes.",
+    source: "LinkedIn profile PDF, pages 1–2",
+    url: "https://www.linkedin.com/in/soniaaspecialist/"
+  },
+  {
+    id: "brand-clarity-example",
+    title: "Brand Clarity — An Example",
+    category: "philosophy",
+    content: "Soniaa recounts an unnamed founder who wanted a complete brand revamp with logo direction and a website brief. When asked to explain the brand in two lines, the founder was unable to answer. She describes pausing the work to clarify purpose, audience, identity and the reason for the business before building. This is her reported anecdote, not an independently verified case study; no financial results are stated.",
+    source: "LinkedIn profile PDF, pages 1–2",
+    url: "https://www.linkedin.com/in/soniaaspecialist/"
+  },
+  {
+    id: "founder-philosophy",
+    title: "Clarity Before Growth",
+    category: "philosophy",
+    content: "Soniaa emphasizes avoiding unnecessary noise and performative startup activity. Her approach prioritizes honest conversations and understanding what a founder is building and why before choosing a solution.",
+    source: "LinkedIn profile PDF, pages 1–2",
+    url: "https://www.linkedin.com/in/soniaaspecialist/"
   },
   {
     id: "company-philosophy",
     title: "i-SmokeStack Philosophy",
     category: "philosophy",
-    content: "The company uses the motto Do More by Doing Less™. Its public mission focuses on reducing complexity in startup operations through technology and practical solutions.",
-    source: "i-SmokeStack LinkedIn company page",
-    url: "https://www.linkedin.com/company/smokestackgeeks",
-  },
-  {
-    id: "startup-support",
-    title: "Startup Support",
-    category: "expertise",
-    content: "i-SmokeStack describes support for early-stage and B2B businesses. Its public description emphasizes process improvement and assistance for founders.",
-    source: "i-SmokeStack LinkedIn company page",
-    url: "https://www.linkedin.com/company/smokestackgeeks",
-  },
-  {
-    id: "mentorship",
-    title: "Mentorship and Talent Development",
-    category: "leadership",
-    content: "The company describes initiatives for startup founders and college students through Mrs. DoIT and Mr. DoIT. These are company initiatives; do not attribute every activity directly to Soniaa Specialist.",
-    source: "i-SmokeStack LinkedIn company page",
-    url: "https://www.linkedin.com/company/smokestackgeeks",
-  },
-  {
-    id: "mentorship-testimonial",
-    title: "Public Mentorship Testimonial",
-    category: "leadership",
-    content: "Former intern Aayushi Surana publicly thanked Soniaa Specialist and other i-SmokeStack colleagues for guidance and encouragement during her internship. This is an attributed testimonial, not an independently measured result.",
-    source: "Aayushi Surana public LinkedIn post",
-    url: "https://www.linkedin.com/posts/aayushi-surana-bbb92620b_intern-gratitude-gratitude-activity-6845992181291905024-7qfm",
+    content: "The hiring challenge states the i-SmokeStack philosophy as Do More by Doing Less™.",
+    source: "i-SmokeStack hiring challenge brief"
   },
   {
     id: "digital-experience",
     title: "About SONIA.OS",
     category: "profile",
-    content: "SONIA.OS is an independent developer challenge project, not an official company website or an authorized representative of the founder.",
-    source: "SONIA.OS project concept",
+    content: "SONIA.OS is an independent developer challenge experience, not an official company website, authorized representative of Soniaa or a direct channel to the founder. Its demonstration Connection Portal is operated by the project developer.",
+    source: "SONIA.OS project concept"
   },
   {
     id: "possibility-engine",
     title: "The Possibility Engine",
     category: "philosophy",
-    content: "Simplify, Focus and Amplify is an illustrative framework created for SONIA.OS. It is inspired by the company motto, not a documented methodology of Soniaa Specialist.",
-    source: "SONIA.OS project concept",
-  },
+    content: "Simplify, Focus and Amplify is an illustrative framework created for SONIA.OS and inspired by the company philosophy. It is not a documented personal methodology of Soniaa Specialist or a guarantee of results.",
+    source: "SONIA.OS project concept"
+  }
 ];

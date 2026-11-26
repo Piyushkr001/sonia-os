@@ -23,48 +23,68 @@ export const knowledgeModules: KnowledgeModule[] = [
   {
     id: "01",
     title: "Expertise",
-    heading: "Marketing with purpose.",
-    description: "Her consultancy describes marketing and sales expertise applied to helping other organizations strengthen their marketing capabilities.",
-    tags: ["Marketing", "Sales", "Advisory"],
+    heading: "Find the problem underneath.",
+    description: "Her profile describes work across positioning, communication, operations, customer experience, internal alignment, decision-making and growth direction.",
+    tags: [
+      "Positioning",
+      "Operations",
+      "Customer Experience"
+    ],
     icon: Brain,
-    sourceUrl: "https://in.linkedin.com/company/soniaspecialist",
+    sourceUrl: "https://www.linkedin.com/in/soniaaspecialist/"
   },
   {
     id: "02",
     title: "Experience",
-    heading: "Knowledge made useful.",
-    description: "The SoniaaSpecialist consultancy, listed as founded in 2013, emphasizes translating experience into practical guidance for businesses.",
-    tags: ["Consulting", "Knowledge Sharing", "Business Growth"],
+    heading: "Perspective shaped by experience.",
+    description: "Soniaa describes 15 years working within companies across industries before starting i-SmokeStack; her headline describes 20 years of untangling startup challenges.",
+    tags: [
+      "Cross-industry experience",
+      "Startup support",
+      "Practical insight"
+    ],
     icon: BriefcaseBusiness,
-    sourceUrl: "https://in.linkedin.com/company/soniaspecialist",
+    sourceUrl: "https://www.linkedin.com/in/soniaaspecialist/"
   },
   {
     id: "03",
     title: "Leadership",
-    heading: "Helping talent develop.",
-    description: "A public testimonial from a former intern credits Soniaa Specialist with encouragement and guidance at i-SmokeStack.",
-    tags: ["Mentorship", "Talent Development"],
+    heading: "Honest conversations first.",
+    description: "As the listed CEO of i-SmokeStack, Soniaa describes an approach that prioritizes candid advice and helping founders identify what is actually holding them back.",
+    tags: [
+      "Clarity",
+      "Decision-making",
+      "Internal alignment"
+    ],
     icon: Compass,
-    sourceUrl: "https://www.linkedin.com/posts/aayushi-surana-bbb92620b_intern-gratitude-gratitude-activity-6845992181291905024-7qfm",
+    sourceUrl: "https://www.linkedin.com/in/soniaaspecialist/"
   },
   {
     id: "04",
     title: "Approach",
-    heading: "Simplify the work that matters.",
-    description: "i-SmokeStack describes its approach as improving startup processes through technology, targeted interventions and tailored solutions.",
-    tags: ["Process Improvement", "Technology", "Startup Operations"],
+    heading: "Understand before building.",
+    description: "Her profile recounts pausing a planned brand revamp when a founder could not explain the brand clearly. She describes exploring purpose, audience and identity before building.",
+    tags: [
+      "Root-cause discovery",
+      "Brand clarity",
+      "Purpose"
+    ],
     icon: Lightbulb,
-    sourceUrl: "https://www.linkedin.com/company/smokestackgeeks",
+    sourceUrl: "https://www.linkedin.com/in/soniaaspecialist/"
   },
   {
     id: "05",
     title: "Entrepreneurship",
-    heading: "Building for founders.",
-    description: "i-SmokeStack focuses on early-stage and B2B businesses, with an emphasis on reducing operational complexity and helping teams grow.",
-    tags: ["Founder", "B2B", "Early-stage Startups"],
+    heading: "Two ventures. One focus on clarity.",
+    description: "i-SmokeStack works with early-stage and growing businesses, while Zero Confusion helps founders clarify their thinking before committing to growth or structured consulting.",
+    tags: [
+      "i-SmokeStack",
+      "Zero Confusion",
+      "Founder support"
+    ],
     icon: Rocket,
-    sourceUrl: "https://www.linkedin.com/company/smokestackgeeks",
-  },
+    sourceUrl: "https://www.linkedin.com/in/soniaaspecialist/"
+  }
 ];
 
 export interface LeadershipModule {
@@ -80,33 +100,33 @@ export const leadershipModules: LeadershipModule[] = [
   {
     id: "01",
     title: "Leadership Approach",
-    description: "A culture of encouragement.",
-    details: "i-SmokeStack describes a supportive culture that recognizes progress and encourages early-career talent. These are stated company values, not a claim about every individual leadership decision.",
+    description: "Direct, honest guidance.",
+    details: "Soniaa describes wanting to provide founders with straightforward answers instead of advice driven by other agendas. Her stated approach emphasizes honesty, clear thinking and the underlying issue.",
     icon: Compass,
-    sourceUrl: "https://www.linkedin.com/company/smokestackgeeks",
+    sourceUrl: "https://www.linkedin.com/in/soniaaspecialist/"
   },
   {
     id: "02",
     title: "Strategic Responsibilities",
-    description: "A founder-focused business mission.",
-    details: "The company’s stated mission centers on helping startups improve business processes and address operational challenges. The public sources do not establish a detailed list of Soniaa Specialist’s individual responsibilities.",
+    description: "Clarity across the business.",
+    details: "Her profile lists her as CEO of i-SmokeStack and describes the venture’s work across business positioning, operations, communication, customer experience, internal alignment, decision-making and growth. It does not enumerate her individual executive duties.",
     icon: Target,
-    sourceUrl: "https://www.linkedin.com/company/smokestackgeeks",
+    sourceUrl: "https://www.linkedin.com/in/soniaaspecialist/"
   },
   {
     id: "03",
     title: "Collaboration",
-    description: "Mentorship in practice.",
-    details: "In a public LinkedIn post, former intern Aayushi Surana acknowledged Soniaa Specialist and other colleagues for their support during her time at i-SmokeStack.",
+    description: "Build alongside founders.",
+    details: "Soniaa describes i-SmokeStack as working closely with companies to understand their challenges and build solutions together rather than only advising from the outside.",
     icon: Users,
-    sourceUrl: "https://www.linkedin.com/posts/aayushi-surana-bbb92620b_intern-gratitude-gratitude-activity-6845992181291905024-7qfm",
+    sourceUrl: "https://www.linkedin.com/in/soniaaspecialist/"
   },
   {
     id: "04",
     title: "Entrepreneurship",
-    description: "Supporting startups and students.",
-    details: "i-SmokeStack describes programs for startup founders and students, including its Mrs. DoIT and Mr. DoIT initiatives. The company aims to help emerging businesses and future professionals use technology more effectively.",
+    description: "Clarity at different stages.",
+    details: "Soniaa founded i-SmokeStack in 2019. She also founded Zero Confusion for founders who need space to understand their ideas before structured consulting, scaling, branding, hiring, marketing or fundraising.",
     icon: Rocket,
-    sourceUrl: "https://www.linkedin.com/company/smokestackgeeks",
-  },
+    sourceUrl: "https://www.linkedin.com/in/soniaaspecialist/"
+  }
 ];

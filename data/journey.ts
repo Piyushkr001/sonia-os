@@ -22,45 +22,61 @@ export const journeyChapters: JourneyChapter[] = [
   {
     id: "01",
     title: "Foundations",
-    subtitle: "Marketing and sales",
-    heading: "Understanding how businesses grow.",
-    description: "Soniaa Specialist’s public consultancy page describes a professional background in marketing and sales.",
-    details: "The focus is on sharing practical marketing knowledge with organizations adapting to modern business needs. Her detailed education history is not confirmed by the accessible primary sources.",
-    tags: ["Marketing", "Sales", "Consulting"],
+    subtitle: "Learning inside businesses",
+    heading: "Recognizing the real problem.",
+    description: "Soniaa describes spending 15 years working inside companies across industries before starting i-SmokeStack.",
+    details: "She repeatedly encountered founders with promising ideas who were struggling to identify the root cause of their difficulties. This experience shaped her emphasis on direct, honest advice.",
+    tags: [
+      "Cross-industry experience",
+      "Founder challenges",
+      "Problem discovery"
+    ],
     icon: BookOpen,
-    sourceUrl: "https://in.linkedin.com/company/soniaspecialist",
+    sourceUrl: "https://www.linkedin.com/in/soniaaspecialist/"
   },
   {
     id: "02",
-    title: "Evolution",
-    subtitle: "From experience to advisory",
-    heading: "Turning knowledge into action.",
-    description: "The SoniaaSpecialist consultancy page lists 2013 as its founding year.",
-    details: "Its public description presents consulting as a way to help organizations develop their marketing capabilities. This chapter highlights the move from professional expertise to knowledge-sharing, rather than claiming a complete career timeline.",
-    tags: ["2013 — Consultancy", "Knowledge Sharing", "Marketing Advisory"],
+    title: "i-SmokeStack",
+    subtitle: "2019 — Founding milestone",
+    heading: "From advice to building together.",
+    description: "In her LinkedIn summary, Soniaa states that she started i-SmokeStack in 2019 to help early-stage and growing companies address what is not working.",
+    details: "The venture works across positioning, communication, operations, customer experience, internal alignment, decision-making and growth direction, with a hands-on approach rather than advice alone.",
+    tags: [
+      "2019",
+      "Startup consulting",
+      "Hands-on support"
+    ],
     icon: TrendingUp,
-    sourceUrl: "https://in.linkedin.com/company/soniaspecialist",
+    sourceUrl: "https://www.linkedin.com/in/soniaaspecialist/"
   },
   {
     id: "03",
-    title: "Leadership",
-    subtitle: "Guidance and encouragement",
-    heading: "Creating space for others to grow.",
-    description: "A former i-SmokeStack intern publicly thanked Soniaa Specialist for guidance during her internship.",
-    details: "The testimonial provides a specific example of mentorship, alongside the company’s stated interest in developing early-career talent.",
-    tags: ["Mentorship", "Professional Development", "Collaboration"],
+    title: "Zero Confusion",
+    subtitle: "Clarity before scaling",
+    heading: "Making space for clearer thinking.",
+    description: "Soniaa founded Zero Confusion after encountering founders whose ideas were strong but whose thinking was overwhelmed.",
+    details: "The venture helps founders clarify what they are building and why before making decisions about branding, hiring, marketing, scaling or raising money. The profile does not specify its founding date.",
+    tags: [
+      "Founder clarity",
+      "Prioritization",
+      "Early-stage ideas"
+    ],
     icon: Compass,
-    sourceUrl: "https://www.linkedin.com/posts/aayushi-surana-bbb92620b_intern-gratitude-gratitude-activity-6845992181291905024-7qfm",
+    sourceUrl: "https://www.linkedin.com/in/soniaaspecialist/"
   },
   {
     id: "04",
-    title: "Entrepreneurship",
-    subtitle: "i-SmokeStack",
-    heading: "Less friction. More possibility.",
-    description: "The challenge introduces Soniaa Specialist as the founder of i-SmokeStack. Its LinkedIn company page lists 2019 as the founding year.",
-    details: "The organization describes its work as helping early-stage businesses streamline operations, use technology effectively and support student development.",
-    tags: ["2019 — Company Founded", "Startup Support", "Entrepreneurship"],
+    title: "Today",
+    subtitle: "Founder & CEO",
+    heading: "Solving the problem beneath the noise.",
+    description: "Her LinkedIn headline describes 20 years of helping startups untangle complexity. Her Experience section lists her as Chief Executive Officer at i-SmokeStack.",
+    details: "Across i-SmokeStack and Zero Confusion, Soniaa emphasizes honest conversations, clear thinking and addressing the underlying problem before committing resources to a solution.",
+    tags: [
+      "Founder",
+      "Chief Executive Officer",
+      "Clarity"
+    ],
     icon: Rocket,
-    sourceUrl: "https://www.linkedin.com/company/smokestackgeeks",
-  },
+    sourceUrl: "https://www.linkedin.com/in/soniaaspecialist/"
+  }
 ];

@@ -16,7 +16,7 @@ const DEFAULT_MODEL = "gemini-3.5-flash";
 
 // Comma-separated list, overridable with GEMINI_FALLBACK_MODELS.
 const DEFAULT_FALLBACK_MODELS =
-  "gemini-flash-latest,gemini-3.7-flash,gemini-3.5-flash-lite,gemini-flash-lite-latest";
+  "gemini-3.5-flash-lite,gemini-flash-latest,gemini-3.8-flash,gemini-3.5-flash,gemini-3.6-flash";
 
 const TOTAL_GEMINI_BUDGET_MS = 40_000;
 const PER_ATTEMPT_MAX_MS = 15_000;
