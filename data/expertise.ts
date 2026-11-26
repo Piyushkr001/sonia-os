@@ -23,47 +23,47 @@ export const knowledgeModules: KnowledgeModule[] = [
   {
     id: "01",
     title: "Expertise",
-    heading: "Knowledge creates possibilities.",
-    description:
-      "Explore Sonia's professional knowledge, specializations and areas of expertise.",
-    tags: ["Knowledge", "Professional Expertise"],
+    heading: "Marketing with purpose.",
+    description: "Her consultancy describes marketing and sales expertise applied to helping other organizations strengthen their marketing capabilities.",
+    tags: ["Marketing", "Sales", "Advisory"],
     icon: Brain,
+    sourceUrl: "https://in.linkedin.com/company/soniaspecialist",
   },
   {
     id: "02",
     title: "Experience",
-    heading: "Experience shapes perspective.",
-    description:
-      "Discover the professional experiences and responsibilities behind her career journey.",
-    tags: ["Experience", "Professional Journey"],
+    heading: "Knowledge made useful.",
+    description: "The SoniaaSpecialist consultancy, listed as founded in 2013, emphasizes translating experience into practical guidance for businesses.",
+    tags: ["Consulting", "Knowledge Sharing", "Business Growth"],
     icon: BriefcaseBusiness,
+    sourceUrl: "https://in.linkedin.com/company/soniaspecialist",
   },
   {
     id: "03",
     title: "Leadership",
-    heading: "Leadership gives direction.",
-    description:
-      "Explore documented leadership roles, professional responsibilities and organizational experiences.",
-    tags: ["Leadership", "Responsibilities"],
+    heading: "Helping talent develop.",
+    description: "A public testimonial from a former intern credits Soniaa Specialist with encouragement and guidance at i-SmokeStack.",
+    tags: ["Mentorship", "Talent Development"],
     icon: Compass,
+    sourceUrl: "https://www.linkedin.com/posts/aayushi-surana-bbb92620b_intern-gratitude-gratitude-activity-6845992181291905024-7qfm",
   },
   {
     id: "04",
     title: "Approach",
-    heading: "Think beyond the obvious.",
-    description:
-      "Explore the ideas and problem-solving philosophy associated with i-SmokeStack.",
-    tags: ["Problem Solving", "Creative Thinking"],
+    heading: "Simplify the work that matters.",
+    description: "i-SmokeStack describes its approach as improving startup processes through technology, targeted interventions and tailored solutions.",
+    tags: ["Process Improvement", "Technology", "Startup Operations"],
     icon: Lightbulb,
+    sourceUrl: "https://www.linkedin.com/company/smokestackgeeks",
   },
   {
     id: "05",
     title: "Entrepreneurship",
-    heading: "Building new possibilities.",
-    description:
-      "Discover Sonia's professional identity as the founder of i-SmokeStack.",
-    tags: ["Founder", "i-SmokeStack"],
+    heading: "Building for founders.",
+    description: "i-SmokeStack focuses on early-stage and B2B businesses, with an emphasis on reducing operational complexity and helping teams grow.",
+    tags: ["Founder", "B2B", "Early-stage Startups"],
     icon: Rocket,
+    sourceUrl: "https://www.linkedin.com/company/smokestackgeeks",
   },
 ];
 
@@ -80,33 +80,33 @@ export const leadershipModules: LeadershipModule[] = [
   {
     id: "01",
     title: "Leadership Approach",
-    description: "Explore professional perspectives.",
-    details:
-      "Documented leadership perspectives and professional experiences will be presented here once verified.",
+    description: "A culture of encouragement.",
+    details: "i-SmokeStack describes a supportive culture that recognizes progress and encourages early-career talent. These are stated company values, not a claim about every individual leadership decision.",
     icon: Compass,
+    sourceUrl: "https://www.linkedin.com/company/smokestackgeeks",
   },
   {
     id: "02",
     title: "Strategic Responsibilities",
-    description: "Discover professional responsibilities.",
-    details:
-      "Explore verified strategic responsibilities, initiatives and organizational contributions.",
+    description: "A founder-focused business mission.",
+    details: "The company’s stated mission centers on helping startups improve business processes and address operational challenges. The public sources do not establish a detailed list of Soniaa Specialist’s individual responsibilities.",
     icon: Target,
+    sourceUrl: "https://www.linkedin.com/company/smokestackgeeks",
   },
   {
     id: "03",
     title: "Collaboration",
-    description: "Explore professional relationships.",
-    details:
-      "Discover documented experiences involving professional collaboration and organizational engagement.",
+    description: "Mentorship in practice.",
+    details: "In a public LinkedIn post, former intern Aayushi Surana acknowledged Soniaa Specialist and other colleagues for their support during her time at i-SmokeStack.",
     icon: Users,
+    sourceUrl: "https://www.linkedin.com/posts/aayushi-surana-bbb92620b_intern-gratitude-gratitude-activity-6845992181291905024-7qfm",
   },
   {
     id: "04",
     title: "Entrepreneurship",
-    description: "Building possibilities.",
-    details:
-      "Sonia is the founder of i-SmokeStack, whose stated philosophy is Do More by Doing Less™.",
+    description: "Supporting startups and students.",
+    details: "i-SmokeStack describes programs for startup founders and students, including its Mrs. DoIT and Mr. DoIT initiatives. The company aims to help emerging businesses and future professionals use technology more effectively.",
     icon: Rocket,
+    sourceUrl: "https://www.linkedin.com/company/smokestackgeeks",
   },
 ];

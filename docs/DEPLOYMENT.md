@@ -21,7 +21,7 @@ Set these in **Vercel Project Settings → Environment Variables** (Production &
 | `DATABASE_URL` | Yes | Neon PostgreSQL connection string (`sslmode=require`) |
 | `GEMINI_API_KEY` | Yes | Google AI Studio API key (server-side only) |
 | `GEMINI_MODEL` | Recommended | Default `gemini-3.5-flash` (or `gemini-4-hydrogen` with fallbacks) |
-| `GEMINI_FALLBACK_MODELS` | Recommended | `gemini-3.5-flash-lite,gemini-3.8-flash,gemini-3.5-flash,gemini-3.6-flash` |
+| `GEMINI_FALLBACK_MODELS` | Recommended | `gemini-flash-latest,gemini-3.7-flash,gemini-3.5-flash-lite,gemini-flash-lite-latest` |
 | `AI_DAILY_LIMIT` | Optional | Default `100` |
 | `ANALYTICS_ADMIN_TOKEN` | Yes | 32+ char secret for `GET /api/analytics/summary` & `/analytics` |
 | `CONTACT_DAILY_LIMIT` | Optional | Default `100` |

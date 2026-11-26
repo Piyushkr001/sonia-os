@@ -22,62 +22,45 @@ export const journeyChapters: JourneyChapter[] = [
   {
     id: "01",
     title: "Foundations",
-    subtitle: "The beginning",
-    heading: "Where it began.",
-    description:
-      "Explore the foundations of Sonia's professional identity.",
-    details:
-      "Verified educational qualifications and early professional experiences will be added here.",
-    tags: [
-      "Education",
-      "Foundations",
-    ],
+    subtitle: "Marketing and sales",
+    heading: "Understanding how businesses grow.",
+    description: "Soniaa Specialist’s public consultancy page describes a professional background in marketing and sales.",
+    details: "The focus is on sharing practical marketing knowledge with organizations adapting to modern business needs. Her detailed education history is not confirmed by the accessible primary sources.",
+    tags: ["Marketing", "Sales", "Consulting"],
     icon: BookOpen,
+    sourceUrl: "https://in.linkedin.com/company/soniaspecialist",
   },
   {
     id: "02",
     title: "Evolution",
-    subtitle: "The path of growth",
-    heading: "Learning. Growing. Evolving.",
-    description:
-      "Discover the experiences and transitions that shaped her professional journey.",
-    details:
-      "Verified career milestones, professional roles and responsibilities will be added here.",
-    tags: [
-      "Career Journey",
-      "Professional Growth",
-    ],
+    subtitle: "From experience to advisory",
+    heading: "Turning knowledge into action.",
+    description: "The SoniaaSpecialist consultancy page lists 2013 as its founding year.",
+    details: "Its public description presents consulting as a way to help organizations develop their marketing capabilities. This chapter highlights the move from professional expertise to knowledge-sharing, rather than claiming a complete career timeline.",
+    tags: ["2013 — Consultancy", "Knowledge Sharing", "Marketing Advisory"],
     icon: TrendingUp,
+    sourceUrl: "https://in.linkedin.com/company/soniaspecialist",
   },
   {
     id: "03",
     title: "Leadership",
-    subtitle: "Leading with purpose",
-    heading: "Beyond responsibilities.",
-    description:
-      "Explore professional leadership through experiences, responsibilities and ideas.",
-    details:
-      "Verified leadership roles, initiatives and professional contributions will be added here.",
-    tags: [
-      "Leadership",
-      "Professional Experience",
-    ],
+    subtitle: "Guidance and encouragement",
+    heading: "Creating space for others to grow.",
+    description: "A former i-SmokeStack intern publicly thanked Soniaa Specialist for guidance during her internship.",
+    details: "The testimonial provides a specific example of mentorship, alongside the company’s stated interest in developing early-career talent.",
+    tags: ["Mentorship", "Professional Development", "Collaboration"],
     icon: Compass,
+    sourceUrl: "https://www.linkedin.com/posts/aayushi-surana-bbb92620b_intern-gratitude-gratitude-activity-6845992181291905024-7qfm",
   },
   {
     id: "04",
     title: "Entrepreneurship",
-    subtitle: "Building possibilities",
-    heading: "Turning possibilities into reality.",
-    description:
-      "Explore Sonia's professional identity as the founder of i-SmokeStack.",
-    details:
-      "Discover the company philosophy of Do More by Doing Less™ and its emphasis on creative problem-solving.",
-    tags: [
-      "Founder",
-      "i-SmokeStack",
-      "Entrepreneurship",
-    ],
+    subtitle: "i-SmokeStack",
+    heading: "Less friction. More possibility.",
+    description: "The challenge introduces Soniaa Specialist as the founder of i-SmokeStack. Its LinkedIn company page lists 2019 as the founding year.",
+    details: "The organization describes its work as helping early-stage businesses streamline operations, use technology effectively and support student development.",
+    tags: ["2019 — Company Founded", "Startup Support", "Entrepreneurship"],
     icon: Rocket,
+    sourceUrl: "https://www.linkedin.com/company/smokestackgeeks",
   },
 ];
