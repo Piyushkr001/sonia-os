@@ -164,7 +164,7 @@ Navigate to `/analytics` (`noindex, nofollow`). Enter the value of `ANALYTICS_AD
 
 ## Known Limitations & Content Blockers
 
-- **Sonia's detailed biography**: Verified LinkedIn / external biographical records for Sonia (education, prior roles, dates, achievements) were not available during development; `data/journey.ts`, `data/expertise.ts`, and `data/knowledge-base.ts` intentionally avoid fabricating details and mark those slots as awaiting verified input.
+- **Soniaa's biographical scope**: Verified founder milestones in [`data/journey.ts`](data/journey.ts), [`data/expertise.ts`](data/expertise.ts), and [`data/knowledge-base.ts`](data/knowledge-base.ts) are sourced from Soniaa Specialist's LinkedIn profile (`https://www.linkedin.com/in/soniaaspecialist/`). Details not listed in that source (prior employers, individual job titles, educational qualifications, Zero Confusion's founding date, and financial/performance outcomes) are intentionally omitted rather than fabricated.
 - **Data retention**: Analytics and contact records are retained in Neon without an automated purge cron job; [`docs/DATABASE.md`](docs/DATABASE.md) documents a recommended 90-day retention policy for production operation.
 
 ---

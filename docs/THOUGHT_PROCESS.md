@@ -33,13 +33,13 @@ Several real issues surfaced during development and hardening, all resolved in t
 3. **Navbar & Layout Separation**:
    Moving `<Navbar />` out of `app/layout.tsx` into `app/page.tsx` kept the public navigation bar and public analytics tracking off the private `/analytics` route while letting the fixed glassmorphic navbar float cleanly over `#080C10`.
 4. **Gemini API Availability & Fallback**:
-   Testing against the live Gemini REST API showed `gemini-4-hydrogen` intermittently returning `503` under high demand and `gemini-2.5-flash` returning `404` for new users. Hardening `lib/gemini.ts` with `responseJsonSchema`, a shared 35-second timeout budget, request abort propagation, and automatic fallback across verified available models (`gemini-3.5-flash`, `gemini-3.6-flash`, `gemini-3.5-flash-lite`, `gemini-3.8-flash`) made Ask Intelligence resilient.
+   Testing against the live Gemini REST API showed `gemini-4-hydrogen` hitting Free Tier quota limits or intermittent `503`s and `gemini-2.5-flash` returning `404` for new users. Hardening `lib/gemini.ts` with `responseJsonSchema`, a shared 40-second timeout budget, 15-second per-attempt timeouts normalized cleanly via `GeminiTimeoutError` (HTTP `504` rather than client abort `499`), request abort propagation, and automatic fallback across verified available models (`gemini-3.5-flash-lite`, `gemini-flash-latest`, `gemini-3.8-flash`, `gemini-3.5-flash`, `gemini-3.6-flash`) made Ask Intelligence resilient.
 5. **Serverless Rate Limiting Without Extra Paid Infrastructure**:
    In-memory Maps do not persist across Vercel serverless invocations. Implementing atomic fixed-window counters in PostgreSQL (`api_rate_limits`) using hashed client identifiers gave us distributed rate limiting with zero new external services.
 
 ## 4. Known Limitations & Input Required
 
-- **Sonia's verified biography**: Detailed education, career dates, and past organization history were intentionally kept as clearly labeled placeholders in `data/journey.ts`, `data/expertise.ts`, and `data/knowledge-base.ts` because no verified LinkedIn profile or biographical source was provided—nothing was fabricated.
+- **Soniaa Specialist's biographical scope**: Verified founder milestones (`i-SmokeStack` founded 2019, `Zero Confusion`, 15 years cross-industry experience, 20-year startup headline, and CEO role) are sourced from Soniaa Specialist's LinkedIn profile (`https://www.linkedin.com/in/soniaaspecialist/`) across [`data/journey.ts`](../data/journey.ts), [`data/expertise.ts`](../data/expertise.ts), and [`data/knowledge-base.ts`](../data/knowledge-base.ts). Details omitted from the profile (previous employers, individual job titles, educational qualifications, Zero Confusion's founding date, and financial/performance metrics) are intentionally excluded rather than fabricated.
 - **[User Input Required — Personal Reflection]**: Add your own notes below before final submission:
   - *Personal motivation for entering the i-SmokeStack Developer Hiring Challenge*: `[Add your notes here]`
   - *Specific AI-assisted prompts or manual refactors you want to highlight*: `[Add your notes here]`
