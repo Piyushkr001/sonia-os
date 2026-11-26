@@ -16,10 +16,10 @@ const DEFAULT_MODEL = "gemini-3.5-flash";
 
 // Comma-separated list, overridable with GEMINI_FALLBACK_MODELS.
 const DEFAULT_FALLBACK_MODELS =
-  "gemini-3.5-flash,gemini-3.6-flash,gemini-3.5-flash-lite,gemini-3.8-flash";
+  "gemini-3.5-flash-lite,gemini-3.8-flash,gemini-3.5-flash,gemini-3.6-flash";
 
 const TOTAL_GEMINI_BUDGET_MS = 35_000;
-const PER_ATTEMPT_MAX_MS = 15_000;
+const PER_ATTEMPT_MAX_MS = 10_000;
 const MIN_REMAINING_BUDGET_MS = 2_000;
 
 const RETRYABLE_STATUS_CODES = new Set([429, 500, 502, 503, 504]);
@@ -28,6 +28,13 @@ class RetryableOutputError extends Error {
   constructor(message: string) {
     super(message);
     this.name = "RetryableOutputError";
+  }
+}
+
+class GeminiTimeoutError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "GeminiTimeoutError";
   }
 }
 
@@ -51,6 +58,10 @@ export function isGeminiRateLimited(error: unknown) {
 }
 
 export function isGeminiTimeout(error: unknown) {
+  if (error instanceof GeminiTimeoutError) {
+    return true;
+  }
+
   if (!axios.isAxiosError(error)) {
     return false;
   }
@@ -63,7 +74,10 @@ export function isGeminiTimeout(error: unknown) {
 }
 
 function isRetryableGeminiError(error: unknown) {
-  if (error instanceof RetryableOutputError) {
+  if (
+    error instanceof RetryableOutputError ||
+    error instanceof GeminiTimeoutError
+  ) {
     return true;
   }
 
@@ -318,14 +332,20 @@ ${JSON.stringify(knowledgeBase)}
         throw error;
       }
 
-      lastError = error;
+      const normalizedError = timeoutSignal.aborted
+        ? new GeminiTimeoutError(
+            `Model "${model}" timed out after ${attemptTimeoutMs}ms.`
+          )
+        : error;
+
+      lastError = normalizedError;
 
       console.warn(
-        `Gemini model "${model}" failed: ${describeGeminiError(error)}`
+        `Gemini model "${model}" failed: ${describeGeminiError(normalizedError)}`
       );
 
-      if (!isRetryableGeminiError(error)) {
-        throw error;
+      if (!isRetryableGeminiError(normalizedError)) {
+        throw normalizedError;
       }
     }
   }
